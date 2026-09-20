@@ -7,12 +7,13 @@ import { ChatScreen } from './src/screens/ChatScreen';
 import { contacts } from './src/data/conversations';
 import { ContactsScreen } from './src/screens/ContactsScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
+import { EditProfileScreen } from './src/screens/EditProfileScreen';
 import { initialProfile } from './src/state/profileState';
 import { createInitialNavigation, goBack, navigateTo } from './src/navigation/navigationState';
 
 export default function App() {
   const [navigation, setNavigation] = useState(createInitialNavigation);
-  const [profile] = useState(initialProfile);
+  const [profile, setProfile] = useState(initialProfile);
   const [activeContactId, setActiveContactId] = useState(null);
   const [conversations, setConversations] = useState(initialConversations);
   const [messages, setMessages] = useState(initialMessages);
@@ -43,7 +44,8 @@ export default function App() {
       {screen === 'conversations' && <ConversationsScreen conversations={conversations} onOpenChat={openChat} onOpenContacts={() => open('contacts')} onOpenProfile={() => open('profile')} />}
       {screen === 'chat' && <ChatScreen contact={contacts.find((item) => item.id === activeContactId)} messages={messages[activeContactId] || []} onBack={back} onSend={sendMessage} />}
       {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={back} onOpenChat={openChat} />}
-      {screen === 'profile' && <ProfileScreen profile={profile} onBack={back} onEdit={() => {}} onOpenSettings={() => {}} />}
+      {screen === 'profile' && <ProfileScreen profile={profile} onBack={back} onEdit={() => open('editProfile')} onOpenSettings={() => {}} />}
+      {screen === 'editProfile' && <EditProfileScreen profile={profile} onCancel={back} onSave={(nextProfile) => { setProfile(nextProfile); back(); }} />}
     </SafeAreaView>
   );
 }

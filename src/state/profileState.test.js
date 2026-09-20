@@ -1,4 +1,4 @@
-import { initialProfile } from './profileState';
+import { initialProfile, normalizeProfile, validateProfile } from './profileState';
 
 describe('perfil inicial', () => {
   it('oferece a identidade de Patrick para a tela de perfil', () => {
@@ -14,3 +14,12 @@ describe('perfil inicial', () => {
   });
 });
 
+describe('edição do perfil', () => {
+  it('apara os campos textuais antes de salvar', () => {
+    expect(normalizeProfile({ ...initialProfile, name: '  Patrick Lima  ', bio: '  Olá  ' })).toMatchObject({ name: 'Patrick Lima', bio: 'Olá' });
+  });
+
+  it('rejeita um nome composto somente por espaços', () => {
+    expect(validateProfile({ ...initialProfile, name: '   ' })).toEqual({ valid: false, errors: { name: 'Informe seu nome.' } });
+  });
+});
