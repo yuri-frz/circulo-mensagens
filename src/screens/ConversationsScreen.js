@@ -17,10 +17,10 @@ function ConversationRow({ item, onOpen }) {
   );
 }
 
-export function ConversationsScreen({ conversations, onOpenChat, onOpenContacts }) {
+export function ConversationsScreen({ conversations, onOpenChat, onOpenContacts, onOpenProfile }) {
   return (
     <View style={styles.screen}>
-      <ScreenHeader eyebrow="seu espaço" title="Círculo" right={<Pressable onPress={onOpenContacts} style={styles.peopleButton}><Text style={styles.peopleIcon}>⌁</Text><Text style={styles.peopleText}>Pessoas</Text></Pressable>} />
+      <ScreenHeader eyebrow="seu espaço" title="Círculo" right={<View style={styles.headerActions}><Pressable onPress={onOpenProfile} style={styles.profileButton}><Text style={styles.profileText}>PO</Text></Pressable><Pressable onPress={onOpenContacts} style={styles.peopleButton}><Text style={styles.peopleIcon}>⌁</Text><Text style={styles.peopleText}>Pessoas</Text></Pressable></View>} />
       <Text style={styles.intro}>Conversas que fazem bem ao dia.</Text>
       <FlatList
         contentContainerStyle={styles.list}
@@ -35,6 +35,7 @@ export function ConversationsScreen({ conversations, onOpenChat, onOpenContacts 
 
 const styles = StyleSheet.create({
   screen: { backgroundColor: theme.colors.background, flex: 1 },
+  headerActions: { alignItems: 'center', flexDirection: 'row', gap: 8 }, profileButton: { alignItems: 'center', backgroundColor: theme.colors.sent, borderRadius: 18, height: 36, justifyContent: 'center', width: 36 }, profileText: { color: theme.colors.primary, fontSize: 12, fontWeight: '900' },
   peopleButton: { alignItems: 'center', backgroundColor: theme.colors.primarySoft, borderRadius: theme.radius.pill, flexDirection: 'row', gap: 5, paddingHorizontal: 13, paddingVertical: 9 },
   peopleIcon: { color: theme.colors.primary, fontSize: 20, fontWeight: '800' }, peopleText: { color: theme.colors.primary, fontSize: 12, fontWeight: '800' },
   intro: { color: theme.colors.muted, fontSize: 15, marginHorizontal: theme.spacing.lg, marginTop: 7 },

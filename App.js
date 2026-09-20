@@ -6,17 +6,25 @@ import { initialConversations, initialMessages } from './src/data/conversations'
 import { ChatScreen } from './src/screens/ChatScreen';
 import { contacts } from './src/data/conversations';
 import { ContactsScreen } from './src/screens/ContactsScreen';
+import { ProfileScreen } from './src/screens/ProfileScreen';
+import { initialProfile } from './src/state/profileState';
+import { createInitialNavigation, goBack, navigateTo } from './src/navigation/navigationState';
 
 export default function App() {
-  const [screen, setScreen] = useState('conversations');
+  const [navigation, setNavigation] = useState(createInitialNavigation);
+  const [profile] = useState(initialProfile);
   const [activeContactId, setActiveContactId] = useState(null);
   const [conversations, setConversations] = useState(initialConversations);
   const [messages, setMessages] = useState(initialMessages);
 
   function openChat(contactId) {
     setActiveContactId(contactId);
-    setScreen('chat');
+    setNavigation((current) => navigateTo(current, 'chat', { contactId }));
   }
+
+  const screen = navigation.current.name;
+  const back = () => setNavigation((current) => goBack(current));
+  const open = (name, params) => setNavigation((current) => navigateTo(current, name, params));
 
   function sendMessage(text) {
     const now = new Date();
@@ -32,9 +40,10 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
-      {screen === 'conversations' && <ConversationsScreen conversations={conversations} onOpenChat={openChat} onOpenContacts={() => setScreen('contacts')} />}
-      {screen === 'chat' && <ChatScreen contact={contacts.find((item) => item.id === activeContactId)} messages={messages[activeContactId] || []} onBack={() => setScreen('conversations')} onSend={sendMessage} />}
-      {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={() => setScreen('conversations')} onOpenChat={openChat} />}
+      {screen === 'conversations' && <ConversationsScreen conversations={conversations} onOpenChat={openChat} onOpenContacts={() => open('contacts')} onOpenProfile={() => open('profile')} />}
+      {screen === 'chat' && <ChatScreen contact={contacts.find((item) => item.id === activeContactId)} messages={messages[activeContactId] || []} onBack={back} onSend={sendMessage} />}
+      {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={back} onOpenChat={openChat} />}
+      {screen === 'profile' && <ProfileScreen profile={profile} onBack={back} onEdit={() => {}} onOpenSettings={() => {}} />}
     </SafeAreaView>
   );
 }
