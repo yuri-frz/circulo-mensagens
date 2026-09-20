@@ -10,7 +10,7 @@ import { ProfileScreen } from './src/screens/ProfileScreen';
 import { EditProfileScreen } from './src/screens/EditProfileScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { NotificationSettingsScreen } from './src/screens/NotificationSettingsScreen';
-import { initialNotificationPreferences, toggleNotificationPreference } from './src/state/conversationState';
+import { initialNotificationPreferences, toggleConversationArchived, toggleConversationMuted, toggleNotificationPreference } from './src/state/conversationState';
 import { initialProfile } from './src/state/profileState';
 import { createInitialNavigation, goBack, navigateTo } from './src/navigation/navigationState';
 import { ConversationDetailsScreen } from './src/screens/ConversationDetailsScreen';
@@ -38,7 +38,8 @@ export default function App() {
     const newMessage = { id: `${activeContactId}-${Date.now()}`, text, time, mine: true };
     setMessages((current) => ({ ...current, [activeContactId]: [...(current[activeContactId] || []), newMessage] }));
     setConversations((current) => {
-      const currentConversation = { contactId: activeContactId, preview: text, time, unread: 0 };
+      const existing = current.find((item) => item.contactId === activeContactId);
+      const currentConversation = { muted: false, archived: false, ...existing, contactId: activeContactId, preview: text, time, unread: 0 };
       return [currentConversation, ...current.filter((item) => item.contactId !== activeContactId)];
     });
   }
@@ -53,7 +54,7 @@ export default function App() {
       {screen === 'editProfile' && <EditProfileScreen profile={profile} onCancel={back} onSave={(nextProfile) => { setProfile(nextProfile); back(); }} />}
       {screen === 'settings' && <SettingsScreen notificationPreferences={notificationPreferences} onBack={back} onOpenNotifications={() => open('notifications')} />}
       {screen === 'notifications' && <NotificationSettingsScreen preferences={notificationPreferences} onBack={back} onToggle={(key) => setNotificationPreferences((current) => toggleNotificationPreference(current, key))} />}
-      {screen === 'conversationDetails' && <ConversationDetailsScreen contact={contacts.find((item) => item.id === activeContactId)} conversation={conversations.find((item) => item.contactId === activeContactId)} onBack={back} onToggleMuted={() => {}} onToggleArchived={() => {}} />}
+      {screen === 'conversationDetails' && <ConversationDetailsScreen contact={contacts.find((item) => item.id === activeContactId)} conversation={conversations.find((item) => item.contactId === activeContactId)} onBack={back} onToggleMuted={() => setConversations((current) => toggleConversationMuted(current, activeContactId))} onToggleArchived={() => { setConversations((current) => toggleConversationArchived(current, activeContactId)); setNavigation(createInitialNavigation()); }} />}
     </SafeAreaView>
   );
 }
