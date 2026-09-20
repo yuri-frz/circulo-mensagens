@@ -9,12 +9,15 @@ import { ContactsScreen } from './src/screens/ContactsScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { EditProfileScreen } from './src/screens/EditProfileScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
+import { NotificationSettingsScreen } from './src/screens/NotificationSettingsScreen';
+import { initialNotificationPreferences, toggleNotificationPreference } from './src/state/conversationState';
 import { initialProfile } from './src/state/profileState';
 import { createInitialNavigation, goBack, navigateTo } from './src/navigation/navigationState';
 
 export default function App() {
   const [navigation, setNavigation] = useState(createInitialNavigation);
   const [profile, setProfile] = useState(initialProfile);
+  const [notificationPreferences, setNotificationPreferences] = useState(initialNotificationPreferences);
   const [activeContactId, setActiveContactId] = useState(null);
   const [conversations, setConversations] = useState(initialConversations);
   const [messages, setMessages] = useState(initialMessages);
@@ -47,7 +50,8 @@ export default function App() {
       {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={back} onOpenChat={openChat} />}
       {screen === 'profile' && <ProfileScreen profile={profile} onBack={back} onEdit={() => open('editProfile')} onOpenSettings={() => open('settings')} />}
       {screen === 'editProfile' && <EditProfileScreen profile={profile} onCancel={back} onSave={(nextProfile) => { setProfile(nextProfile); back(); }} />}
-      {screen === 'settings' && <SettingsScreen onBack={back} onOpenNotifications={() => {}} />}
+      {screen === 'settings' && <SettingsScreen notificationPreferences={notificationPreferences} onBack={back} onOpenNotifications={() => open('notifications')} />}
+      {screen === 'notifications' && <NotificationSettingsScreen preferences={notificationPreferences} onBack={back} onToggle={(key) => setNotificationPreferences((current) => toggleNotificationPreference(current, key))} />}
     </SafeAreaView>
   );
 }
