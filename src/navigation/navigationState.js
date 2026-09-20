@@ -23,3 +23,7 @@ export function replaceRoute(state, name, params = {}) {
   const stack = [...state.stack.slice(0, -1), route];
   return { stack, current: route };
 }
+
+export function openChatFromContacts(state, contactId) {
+  return replaceRoute(state, 'chat', { contactId });
+}

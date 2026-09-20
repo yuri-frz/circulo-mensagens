@@ -15,14 +15,14 @@ export function ProfileScreen({ profile, onBack, onEdit, onOpenSettings }) {
           <Text style={styles.name}>{profile.name}</Text>
           <Text style={styles.username}>{profile.username}</Text>
           <Text style={styles.bio}>{profile.bio}</Text>
-          <Pressable onPress={onEdit} style={styles.primaryButton}><Text style={styles.primaryText}>Editar perfil</Text></Pressable>
+          <Pressable accessibilityLabel="Editar perfil" accessibilityRole="button" onPress={onEdit} style={styles.primaryButton}><Text style={styles.primaryText}>Editar perfil</Text></Pressable>
         </View>
         <SectionCard title="Contato"><View style={styles.card}>
           <Text style={styles.label}>E-mail</Text><Text style={styles.value}>{profile.email}</Text>
           <View style={styles.divider} />
           <Text style={styles.label}>Telefone</Text><Text style={styles.value}>{profile.phone}</Text>
         </View></SectionCard>
-        <Pressable onPress={onOpenSettings} style={styles.settings}><Text style={styles.settingsText}>Configurações</Text><Text style={styles.arrow}>›</Text></Pressable>
+        <Pressable accessibilityLabel="Abrir configurações" accessibilityRole="button" onPress={onOpenSettings} style={styles.settings}><Text style={styles.settingsText}>Configurações</Text><Text style={styles.arrow}>›</Text></Pressable>
       </ScrollView>
     </View>
   );

@@ -10,9 +10,9 @@ import { ProfileScreen } from './src/screens/ProfileScreen';
 import { EditProfileScreen } from './src/screens/EditProfileScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { NotificationSettingsScreen } from './src/screens/NotificationSettingsScreen';
-import { initialNotificationPreferences, toggleConversationArchived, toggleConversationMuted, toggleNotificationPreference } from './src/state/conversationState';
+import { ensureConversation, initialNotificationPreferences, toggleConversationArchived, toggleConversationMuted, toggleNotificationPreference } from './src/state/conversationState';
 import { initialProfile } from './src/state/profileState';
-import { createInitialNavigation, goBack, navigateTo, openConversationDetails, replaceRoute } from './src/navigation/navigationState';
+import { createInitialNavigation, goBack, navigateTo, openChatFromContacts, openConversationDetails, replaceRoute } from './src/navigation/navigationState';
 import { ConversationDetailsScreen } from './src/screens/ConversationDetailsScreen';
 
 export default function App() {
@@ -25,7 +25,14 @@ export default function App() {
 
   function openChat(contactId) {
     setActiveContactId(contactId);
+    setConversations((current) => ensureConversation(current, contactId));
     setNavigation((current) => navigateTo(current, 'chat', { contactId }));
+  }
+
+  function openChatFromPeople(contactId) {
+    setActiveContactId(contactId);
+    setConversations((current) => ensureConversation(current, contactId));
+    setNavigation((current) => openChatFromContacts(current, contactId));
   }
 
   const screen = navigation.current.name;
@@ -49,7 +56,7 @@ export default function App() {
       <StatusBar style="dark" />
       {screen === 'conversations' && <ConversationsScreen conversations={conversations} onOpenChat={openChat} onOpenContacts={() => open('contacts')} onOpenProfile={() => open('profile')} />}
       {screen === 'chat' && <ChatScreen contact={contacts.find((item) => item.id === activeContactId)} messages={messages[activeContactId] || []} onBack={back} onSend={sendMessage} onOpenDetails={() => setNavigation((current) => openConversationDetails(current, activeContactId))} />}
-      {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={back} onOpenChat={openChat} />}
+      {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={back} onOpenChat={openChatFromPeople} />}
       {screen === 'profile' && <ProfileScreen profile={profile} onBack={back} onEdit={() => open('editProfile')} onOpenSettings={() => open('settings')} />}
       {screen === 'editProfile' && <EditProfileScreen profile={profile} onCancel={back} onSave={(nextProfile) => { setProfile(nextProfile); back(); }} />}
       {screen === 'settings' && <SettingsScreen notificationPreferences={notificationPreferences} onBack={back} onOpenNotifications={() => open('notifications')} />}

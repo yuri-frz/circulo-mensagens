@@ -1,4 +1,4 @@
-import { filterConversations, initialNotificationPreferences, toggleConversationArchived, toggleConversationMuted, toggleNotificationPreference } from './conversationState';
+import { ensureConversation, filterConversations, initialNotificationPreferences, toggleConversationArchived, toggleConversationMuted, toggleNotificationPreference } from './conversationState';
 
 describe('preferências de notificação', () => {
   it('alterna uma preferência sem mutar o estado anterior', () => {
@@ -32,5 +32,12 @@ describe('ações da conversa', () => {
 
   it('preserva a mesma lista quando o contato não existe', () => {
     expect(toggleConversationMuted(conversations, 'unknown')).toBe(conversations);
+  });
+
+  it('materializa uma conversa nova antes de permitir ações', () => {
+    const next = ensureConversation(conversations, 'nina');
+    expect(next).toHaveLength(3);
+    expect(next[2]).toEqual({ contactId: 'nina', preview: 'Conversa iniciada', time: '', unread: 0, muted: false, archived: false });
+    expect(ensureConversation(next, 'nina')).toBe(next);
   });
 });

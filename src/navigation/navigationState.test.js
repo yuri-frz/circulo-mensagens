@@ -1,4 +1,4 @@
-import { createInitialNavigation, goBack, navigateTo, openConversationDetails, replaceRoute } from './navigationState';
+import { createInitialNavigation, goBack, navigateTo, openChatFromContacts, openConversationDetails, replaceRoute } from './navigationState';
 
 describe('navegação local', () => {
   it('abre o perfil a partir das conversas e retorna à lista', () => {
@@ -8,6 +8,13 @@ describe('navegação local', () => {
     expect(profile.current).toEqual({ name: 'profile', params: {} });
     expect(goBack(profile).current).toEqual({ name: 'conversations', params: {} });
   });
+});
+
+it('substitui Pessoas pelo chat para voltar diretamente às conversas', () => {
+  const contacts = navigateTo(createInitialNavigation(), 'contacts');
+  const chat = openChatFromContacts(contacts, 'nina');
+  expect(chat.stack).toEqual([{ name: 'conversations', params: {} }, { name: 'chat', params: { contactId: 'nina' } }]);
+  expect(goBack(chat).current.name).toBe('conversations');
 });
 
 it('mantém a raiz ao voltar sem histórico e substitui detalhes após arquivar', () => {

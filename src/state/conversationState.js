@@ -16,3 +16,8 @@ export const toggleConversationArchived = (conversations, contactId) => toggleCo
 export function filterConversations(conversations, mode = 'active') {
   return conversations.filter((item) => mode === 'archived' ? item.archived : !item.archived);
 }
+
+export function ensureConversation(conversations, contactId) {
+  if (conversations.some((item) => item.contactId === contactId)) return conversations;
+  return [...conversations, { contactId, preview: 'Conversa iniciada', time: '', unread: 0, muted: false, archived: false }];
+}
