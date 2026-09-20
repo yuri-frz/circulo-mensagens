@@ -3,7 +3,7 @@ import { theme } from '../styles/theme';
 
 export function Avatar({ contact, size = 48 }) {
   return (
-    <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2, backgroundColor: contact.color }]}>
+    <View accessibilityLabel={`Avatar de ${contact.name}`} style={[styles.avatar, { width: size, height: size, borderRadius: size / 2, backgroundColor: contact.color }]}>
       <Text style={[styles.initials, { fontSize: size * 0.31 }]}>{contact.initials}</Text>
       {contact.online && <View style={styles.presence} />}
     </View>
