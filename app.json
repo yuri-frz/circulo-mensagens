@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Círculo",
+    "slug": "circulo-mensagens",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": { "resizeMode": "contain", "backgroundColor": "#F7F7FB" },
+    "android": { "adaptiveIcon": { "backgroundColor": "#F7F7FB" } },
+    "web": { "bundler": "metro" }
+  }
+}
