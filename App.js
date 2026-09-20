@@ -5,6 +5,7 @@ import { ConversationsScreen } from './src/screens/ConversationsScreen';
 import { initialConversations, initialMessages } from './src/data/conversations';
 import { ChatScreen } from './src/screens/ChatScreen';
 import { contacts } from './src/data/conversations';
+import { ContactsScreen } from './src/screens/ContactsScreen';
 
 export default function App() {
   const [screen, setScreen] = useState('conversations');
@@ -33,6 +34,7 @@ export default function App() {
       <StatusBar style="dark" />
       {screen === 'conversations' && <ConversationsScreen conversations={conversations} onOpenChat={openChat} onOpenContacts={() => setScreen('contacts')} />}
       {screen === 'chat' && <ChatScreen contact={contacts.find((item) => item.id === activeContactId)} messages={messages[activeContactId] || []} onBack={() => setScreen('conversations')} onSend={sendMessage} />}
+      {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={() => setScreen('conversations')} onOpenChat={openChat} />}
     </SafeAreaView>
   );
 }
