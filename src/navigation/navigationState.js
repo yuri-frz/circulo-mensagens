@@ -14,3 +14,6 @@ export function goBack(state) {
   return { stack, current: stack[stack.length - 1] };
 }
 
+export function openConversationDetails(state, contactId) {
+  return navigateTo(state, 'conversationDetails', { contactId });
+}
