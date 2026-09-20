@@ -17,3 +17,9 @@ export function goBack(state) {
 export function openConversationDetails(state, contactId) {
   return navigateTo(state, 'conversationDetails', { contactId });
 }
+
+export function replaceRoute(state, name, params = {}) {
+  const route = { name, params };
+  const stack = [...state.stack.slice(0, -1), route];
+  return { stack, current: route };
+}

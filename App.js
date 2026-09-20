@@ -12,7 +12,7 @@ import { SettingsScreen } from './src/screens/SettingsScreen';
 import { NotificationSettingsScreen } from './src/screens/NotificationSettingsScreen';
 import { initialNotificationPreferences, toggleConversationArchived, toggleConversationMuted, toggleNotificationPreference } from './src/state/conversationState';
 import { initialProfile } from './src/state/profileState';
-import { createInitialNavigation, goBack, navigateTo } from './src/navigation/navigationState';
+import { createInitialNavigation, goBack, navigateTo, openConversationDetails, replaceRoute } from './src/navigation/navigationState';
 import { ConversationDetailsScreen } from './src/screens/ConversationDetailsScreen';
 
 export default function App() {
@@ -48,13 +48,13 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       {screen === 'conversations' && <ConversationsScreen conversations={conversations} onOpenChat={openChat} onOpenContacts={() => open('contacts')} onOpenProfile={() => open('profile')} />}
-      {screen === 'chat' && <ChatScreen contact={contacts.find((item) => item.id === activeContactId)} messages={messages[activeContactId] || []} onBack={back} onSend={sendMessage} onOpenDetails={() => open('conversationDetails', { contactId: activeContactId })} />}
+      {screen === 'chat' && <ChatScreen contact={contacts.find((item) => item.id === activeContactId)} messages={messages[activeContactId] || []} onBack={back} onSend={sendMessage} onOpenDetails={() => setNavigation((current) => openConversationDetails(current, activeContactId))} />}
       {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={back} onOpenChat={openChat} />}
       {screen === 'profile' && <ProfileScreen profile={profile} onBack={back} onEdit={() => open('editProfile')} onOpenSettings={() => open('settings')} />}
       {screen === 'editProfile' && <EditProfileScreen profile={profile} onCancel={back} onSave={(nextProfile) => { setProfile(nextProfile); back(); }} />}
       {screen === 'settings' && <SettingsScreen notificationPreferences={notificationPreferences} onBack={back} onOpenNotifications={() => open('notifications')} />}
       {screen === 'notifications' && <NotificationSettingsScreen preferences={notificationPreferences} onBack={back} onToggle={(key) => setNotificationPreferences((current) => toggleNotificationPreference(current, key))} />}
-      {screen === 'conversationDetails' && <ConversationDetailsScreen contact={contacts.find((item) => item.id === activeContactId)} conversation={conversations.find((item) => item.contactId === activeContactId)} onBack={back} onToggleMuted={() => setConversations((current) => toggleConversationMuted(current, activeContactId))} onToggleArchived={() => { setConversations((current) => toggleConversationArchived(current, activeContactId)); setNavigation(createInitialNavigation()); }} />}
+      {screen === 'conversationDetails' && <ConversationDetailsScreen contact={contacts.find((item) => item.id === activeContactId)} conversation={conversations.find((item) => item.contactId === activeContactId)} onBack={back} onToggleMuted={() => setConversations((current) => toggleConversationMuted(current, activeContactId))} onToggleArchived={() => { setConversations((current) => toggleConversationArchived(current, activeContactId)); setNavigation((current) => replaceRoute(current, 'conversations')); }} />}
     </SafeAreaView>
   );
 }
