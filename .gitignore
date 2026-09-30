@@ -1,5 +1,8 @@
 node_modules/
 .expo/
 dist/
-npm-debug.*
+dist-*/
+graphify-out/
+.superpowers/
 .env
+npm-debug.*

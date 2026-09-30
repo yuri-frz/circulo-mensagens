@@ -7,10 +7,10 @@ export const contacts = [
 ];
 
 export const initialConversations = [
-  { contactId: 'luna', preview: 'A apresentação ficou linda!', time: '09:42', unread: 2 },
-  { contactId: 'caio', preview: 'Te encontro depois do almoço.', time: '08:15', unread: 0 },
-  { contactId: 'bia', preview: 'Já escolheu o próximo livro?', time: 'Ontem', unread: 0 },
-  { contactId: 'davi', preview: 'Vou revelar as fotos no sábado.', time: 'Sex', unread: 1 }
+  { contactId: 'luna', preview: 'A apresentação ficou linda!', time: '09:42', unread: 2, muted: false, archived: false },
+  { contactId: 'caio', preview: 'Te encontro depois do almoço.', time: '08:15', unread: 0, muted: false, archived: false },
+  { contactId: 'bia', preview: 'Já escolheu o próximo livro?', time: 'Ontem', unread: 0, muted: false, archived: false },
+  { contactId: 'davi', preview: 'Vou revelar as fotos no sábado.', time: 'Sex', unread: 1, muted: false, archived: false }
 ];
 
 export const initialMessages = {
