@@ -14,10 +14,18 @@ import { ensureConversation, initialNotificationPreferences, toggleConversationA
 import { initialProfile } from './src/state/profileState';
 import { createInitialNavigation, goBack, navigateTo, openChatFromContacts, openConversationDetails, replaceRoute } from './src/navigation/navigationState';
 import { ConversationDetailsScreen } from './src/screens/ConversationDetailsScreen';
+import { AppearanceScreen } from './src/screens/AppearanceScreen';
+import { PrivacyScreen } from './src/screens/PrivacyScreen';
+import { ConversationMediaScreen } from './src/screens/ConversationMediaScreen';
+import { HelpScreen } from './src/screens/HelpScreen';
+import { initialAppearance, initialPrivacyPreferences, selectAppearance, togglePreference } from './src/state/appPreferences';
+import { openConversationMedia, openSettingsSection } from './src/navigation/navigationState';
 
 export default function App() {
   const [navigation, setNavigation] = useState(createInitialNavigation);
   const [profile, setProfile] = useState(initialProfile);
+  const [appearance, setAppearance] = useState(initialAppearance);
+  const [privacyPreferences, setPrivacyPreferences] = useState(initialPrivacyPreferences);
   const [notificationPreferences, setNotificationPreferences] = useState(initialNotificationPreferences);
   const [activeContactId, setActiveContactId] = useState(null);
   const [conversations, setConversations] = useState(initialConversations);
@@ -59,9 +67,13 @@ export default function App() {
       {screen === 'contacts' && <ContactsScreen contacts={contacts} onBack={back} onOpenChat={openChatFromPeople} />}
       {screen === 'profile' && <ProfileScreen profile={profile} onBack={back} onEdit={() => open('editProfile')} onOpenSettings={() => open('settings')} />}
       {screen === 'editProfile' && <EditProfileScreen profile={profile} onCancel={back} onSave={(nextProfile) => { setProfile(nextProfile); back(); }} />}
-      {screen === 'settings' && <SettingsScreen notificationPreferences={notificationPreferences} onBack={back} onOpenNotifications={() => open('notifications')} />}
+      {screen === 'settings' && <SettingsScreen notificationPreferences={notificationPreferences} appearance={appearance} onBack={back} onOpenNotifications={() => open('notifications')} onOpenAppearance={() => setNavigation((current) => openSettingsSection(current, 'appearance'))} onOpenPrivacy={() => setNavigation((current) => openSettingsSection(current, 'privacy'))} onOpenHelp={() => setNavigation((current) => openSettingsSection(current, 'help'))} />}
       {screen === 'notifications' && <NotificationSettingsScreen preferences={notificationPreferences} onBack={back} onToggle={(key) => setNotificationPreferences((current) => toggleNotificationPreference(current, key))} />}
-      {screen === 'conversationDetails' && <ConversationDetailsScreen contact={contacts.find((item) => item.id === activeContactId)} conversation={conversations.find((item) => item.contactId === activeContactId)} onBack={back} onToggleMuted={() => setConversations((current) => toggleConversationMuted(current, activeContactId))} onToggleArchived={() => { setConversations((current) => toggleConversationArchived(current, activeContactId)); setNavigation((current) => replaceRoute(current, 'conversations')); }} />}
+      {screen === 'appearance' && <AppearanceScreen appearance={appearance} onBack={back} onSelectMode={(mode) => setAppearance((current) => selectAppearance(current, mode))} onToggleCompactList={() => setAppearance((current) => togglePreference(current, 'compactList'))} />}
+      {screen === 'privacy' && <PrivacyScreen preferences={privacyPreferences} onBack={back} onToggle={(key) => setPrivacyPreferences((current) => togglePreference(current, key))} />}
+      {screen === 'help' && <HelpScreen onBack={back} />}
+      {screen === 'conversationDetails' && <ConversationDetailsScreen contact={contacts.find((item) => item.id === activeContactId)} conversation={conversations.find((item) => item.contactId === activeContactId)} onBack={back} onOpenMedia={() => setNavigation((current) => openConversationMedia(current, activeContactId))} onToggleMuted={() => setConversations((current) => toggleConversationMuted(current, activeContactId))} onToggleArchived={() => { setConversations((current) => toggleConversationArchived(current, activeContactId)); setNavigation((current) => replaceRoute(current, 'conversations')); }} />}
+      {screen === 'conversationMedia' && <ConversationMediaScreen contact={contacts.find((item) => item.id === activeContactId)} onBack={back} />}
     </SafeAreaView>
   );
 }
