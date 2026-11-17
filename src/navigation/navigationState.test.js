@@ -1,4 +1,4 @@
-import { createInitialNavigation, goBack, navigateTo, openChatFromContacts, openConversationDetails, replaceRoute } from './navigationState';
+import { createInitialNavigation, goBack, navigateTo, openChatFromContacts, openConversationDetails, openConversationMedia, openSettingsSection, replaceRoute } from './navigationState';
 
 describe('navegação local', () => {
   it('abre o perfil a partir das conversas e retorna à lista', () => {
@@ -31,4 +31,13 @@ it('preserva a conversa ativa ao abrir detalhes e voltar', () => {
   const details = openConversationDetails(chat, 'luna');
   expect(details.current).toEqual({ name: 'conversationDetails', params: { contactId: 'luna' } });
   expect(goBack(details).current).toEqual({ name: 'chat', params: { contactId: 'luna' } });
+});
+
+it('abre mídias da conversa e seções das configurações no histórico', () => {
+  const chat = navigateTo(createInitialNavigation(), 'chat', { contactId: 'luna' });
+  const media = openConversationMedia(chat, 'luna');
+  const privacy = openSettingsSection(navigateTo(createInitialNavigation(), 'settings'), 'privacy');
+  expect(media.current).toEqual({ name: 'conversationMedia', params: { contactId: 'luna' } });
+  expect(goBack(media).current.name).toBe('chat');
+  expect(privacy.current.name).toBe('privacy');
 });
