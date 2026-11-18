@@ -4,15 +4,17 @@ import { Avatar } from '../components/Avatar';
 import { theme } from '../styles/theme';
 import { EmptyState } from '../components/EmptyState';
 
-export function ChatScreen({ contact, messages, onBack, onSend, onOpenDetails }) {
-  const [draft, setDraft] = useState('');
+export function ChatScreen({ contact, messages, onBack, onSend, onOpenDetails, draft: savedDraft, onDraftChange, disabled = false, sending = false }) {
+  const [localDraft, setLocalDraft] = useState('');
+  const draft = savedDraft ?? localDraft;
+  const setDraft = onDraftChange || setLocalDraft;
   const listRef = useRef(null);
   useEffect(() => listRef.current?.scrollToEnd({ animated: true }), [messages]);
-  function submit() {
+  async function submit() {
     const text = draft.trim();
-    if (!text) return;
-    onSend(text);
-    setDraft('');
+    if (!text || disabled || sending) return;
+    const success = await onSend(text);
+    if (!onDraftChange && success !== false) setLocalDraft((current) => current === draft ? '' : current);
   }
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.screen}>
@@ -30,8 +32,8 @@ export function ChatScreen({ contact, messages, onBack, onSend, onOpenDetails })
         ListEmptyComponent={<EmptyState title="Nenhuma mensagem ainda" description="Envie uma mensagem para começar esta conversa." />}
       />
       <View style={styles.composer}>
-        <TextInput accessibilityLabel="Mensagem" value={draft} onChangeText={setDraft} onSubmitEditing={submit} placeholder="Escreva uma mensagem" placeholderTextColor={theme.colors.muted} returnKeyType="send" style={styles.input} />
-        <Pressable accessibilityLabel="Enviar mensagem" accessibilityRole="button" accessibilityState={{ disabled: !draft.trim() }} disabled={!draft.trim()} onPress={submit} style={({ pressed }) => [styles.send, !draft.trim() && styles.sendDisabled, pressed && styles.pressed]}><Text style={styles.sendText}>↑</Text></Pressable>
+        <TextInput accessibilityLabel="Mensagem" maxLength={4000} value={draft} onChangeText={setDraft} onSubmitEditing={submit} placeholder="Escreva uma mensagem" placeholderTextColor={theme.colors.muted} returnKeyType="send" style={styles.input} />
+        <Pressable accessibilityLabel="Enviar mensagem" accessibilityRole="button" accessibilityState={{ disabled: !draft.trim() || disabled || sending }} disabled={!draft.trim() || disabled || sending} onPress={submit} style={({ pressed }) => [styles.send, (!draft.trim() || disabled || sending) && styles.sendDisabled, pressed && styles.pressed]}><Text style={styles.sendText}>{sending ? '…' : '↑'}</Text></Pressable>
       </View>
     </KeyboardAvoidingView>
   );

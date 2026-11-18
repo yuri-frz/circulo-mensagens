@@ -8,20 +8,22 @@ const fields = [
   ['name', 'Nome'], ['username', 'Usuário'], ['bio', 'Sobre você'], ['email', 'E-mail'], ['phone', 'Telefone']
 ];
 
-export function EditProfileScreen({ profile, onCancel, onSave }) {
-  const [draft, setDraft] = useState(profile);
+export function EditProfileScreen({ profile, onCancel, onSave, draft: savedDraft, onDraftChange, disabled = false }) {
+  const [localDraft, setLocalDraft] = useState(profile);
+  const draft = savedDraft || localDraft;
+  const setDraft = onDraftChange || setLocalDraft;
   const [errors, setErrors] = useState({});
   function submit() {
     const result = validateProfile(draft);
     setErrors(result.errors);
-    if (result.valid) onSave(normalizeProfile(draft));
+    if (result.valid && !disabled) onSave(normalizeProfile(draft));
   }
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.screen}>
       <ScreenHeader eyebrow="seu perfil" title="Editar" right={<Pressable accessibilityLabel="Cancelar edição" accessibilityRole="button" onPress={onCancel} style={styles.cancel}><Text style={styles.cancelText}>Cancelar</Text></Pressable>} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        {fields.map(([key, label]) => <View key={key} style={styles.field}><Text style={styles.label}>{label}</Text><TextInput accessibilityLabel={label} multiline={key === 'bio'} onChangeText={(value) => setDraft((current) => ({ ...current, [key]: value }))} style={[styles.input, key === 'bio' && styles.multiline, errors[key] && styles.invalid]} value={draft[key]} />{errors[key] && <Text accessibilityLiveRegion="polite" style={styles.error}>{errors[key]}</Text>}</View>)}
-        <Pressable accessibilityLabel="Salvar alterações" accessibilityRole="button" onPress={submit} style={styles.save}><Text style={styles.saveText}>Salvar alterações</Text></Pressable>
+        {fields.map(([key, label]) => <View key={key} style={styles.field}><Text style={styles.label}>{label}</Text><TextInput accessibilityLabel={label} maxLength={{ name: 100, username: 64, bio: 500, email: 254, phone: 40 }[key]} multiline={key === 'bio'} onChangeText={(value) => setDraft((current) => ({ ...current, [key]: value }))} style={[styles.input, key === 'bio' && styles.multiline, errors[key] && styles.invalid]} value={draft[key]} />{errors[key] && <Text accessibilityLiveRegion="polite" style={styles.error}>{errors[key]}</Text>}</View>)}
+        <Pressable accessibilityLabel="Salvar alterações" accessibilityRole="button" disabled={disabled} accessibilityState={{ disabled }} onPress={submit} style={[styles.save, disabled && { opacity: 0.5 }]}><Text style={styles.saveText}>Salvar alterações</Text></Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );
