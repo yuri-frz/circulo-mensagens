@@ -19,7 +19,7 @@ export function ContactsScreen({ contacts, onBack, onOpenChat }) {
 }
 
 const styles = StyleSheet.create({
-    screen: { backgroundColor: theme.colors.background, flex: 1 }, close: { alignItems: 'center', backgroundColor: theme.colors.primarySoft, borderRadius: theme.radius.pill, height: 44, justifyContent: 'center', width: 44 }, closeText: { color: theme.colors.primary, fontSize: 27, fontWeight: '300', marginTop: -2 },
+    screen: { flex: 1 }, close: { alignItems: 'center', backgroundColor: theme.colors.primarySoft, borderRadius: theme.radius.pill, height: 44, justifyContent: 'center', width: 44 }, closeText: { color: theme.colors.primary, fontSize: 27, fontWeight: '300', marginTop: -2 },
   searchBox: { alignItems: 'center', backgroundColor: theme.colors.surface, borderColor: theme.colors.line, borderRadius: theme.radius.md, borderWidth: 1, flexDirection: 'row', marginHorizontal: theme.spacing.lg, marginTop: theme.spacing.lg, paddingHorizontal: 13 }, searchIcon: { color: theme.colors.primary, fontSize: 25, marginRight: 6 }, search: { color: theme.colors.ink, flex: 1, fontSize: 15, height: 48 }, count: { color: theme.colors.muted, fontSize: 13, marginHorizontal: theme.spacing.lg, marginTop: 14 },
   list: { paddingHorizontal: theme.spacing.lg, paddingTop: 10 }, row: { alignItems: 'center', backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, flexDirection: 'row', marginBottom: 9, padding: 12 }, copy: { flex: 1, marginLeft: 12 }, name: { color: theme.colors.ink, fontSize: 16, fontWeight: '800' }, detail: { color: theme.colors.muted, fontSize: 13, marginTop: 4 }, arrow: { color: theme.colors.primary, fontSize: 26 }, pressed: { opacity: 0.7 }, empty: { color: theme.colors.muted, marginTop: 30, textAlign: 'center' }
 });

@@ -39,9 +39,9 @@ export function ConversationsScreen({ conversations, contacts = demoContacts, on
 }
 
 const styles = StyleSheet.create({
-  screen: { backgroundColor: theme.colors.background, flex: 1 },
+  screen: { flex: 1 },
   list: { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg },
-  row: { alignItems: 'center', backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, flexDirection: 'row', marginBottom: 10, padding: 13 },
+  row: { ...theme.shadow, borderWidth: 1, borderColor: theme.colors.surface, alignItems: 'center', backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, flexDirection: 'row', marginBottom: 10, padding: 13 },
   pressed: { opacity: 0.72 }, copy: { flex: 1, marginLeft: 12 }, nameLine: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   name: { color: theme.colors.ink, fontSize: 16, fontWeight: '800' }, time: { color: theme.colors.muted, fontSize: 12 },
   previewLine: { alignItems: 'center', flexDirection: 'row', marginTop: 4 }, preview: { color: theme.colors.muted, flex: 1, fontSize: 14 },

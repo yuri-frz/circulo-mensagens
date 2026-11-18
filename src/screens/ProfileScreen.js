@@ -29,7 +29,7 @@ export function ProfileScreen({ profile, onBack, onEdit, onOpenSettings }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { backgroundColor: theme.colors.background, flex: 1 },
+  screen: { flex: 1 },
   content: { padding: theme.spacing.lg },
   hero: { alignItems: 'center', backgroundColor: theme.colors.surface, borderRadius: theme.radius.lg, padding: theme.spacing.lg, ...theme.shadow },
   name: { color: theme.colors.ink, fontSize: 23, fontWeight: '800', marginTop: 14 },

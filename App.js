@@ -1,3 +1,4 @@
+import { PrintTexture } from './src/components/PrintTexture';
 import { theme } from './src/styles/theme';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
@@ -90,6 +91,7 @@ export default function App() {
   }
   return <SafeAreaView style={styles.container}>
     <StatusBar style="dark" />
+    <PrintTexture />
     <View style={styles.connection}>
       <Text accessibilityLiveRegion="polite" style={styles.connectionText}>{connection.busy ? 'Conectando…' : connection.online ? 'Conectado · demonstração com perfil compartilhado' : state ? 'Offline · mostrando dados salvos' : 'Conecte ao servidor para começar'}</Text>
       <Pressable accessibilityRole="button" accessibilityLabel="Reconectar ao servidor" accessibilityState={{ disabled: connection.busy }} disabled={connection.busy} onPress={() => session.refresh()} style={styles.retry}><Text style={styles.retryText}>Reconectar</Text></Pressable>

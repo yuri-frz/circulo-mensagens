@@ -30,7 +30,7 @@ export function EditProfileScreen({ profile, onCancel, onSave, draft: savedDraft
 }
 
 const styles = StyleSheet.create({
-  screen: { backgroundColor: theme.colors.background, flex: 1 }, content: { padding: theme.spacing.lg },
+  screen: { flex: 1 }, content: { padding: theme.spacing.lg },
   cancel: { justifyContent: 'center', minHeight: 44, paddingHorizontal: 8, paddingVertical: 10 }, cancelText: { color: theme.colors.primary, fontWeight: '800' },
   field: { marginBottom: 16 }, label: { color: theme.colors.ink, fontSize: 13, fontWeight: '800', marginBottom: 7 },
   input: { backgroundColor: theme.colors.surface, borderColor: theme.colors.line, borderRadius: theme.radius.sm, borderWidth: 1, color: theme.colors.ink, fontSize: 15, minHeight: 48, padding: 13 },

@@ -15,4 +15,4 @@ export function NotificationSettingsScreen({ preferences, onBack, onToggle, disa
   return <View style={styles.screen}><ScreenHeader eyebrow="preferências" title="Notificações" right={<IconButton icon="‹" label="Voltar às configurações" onPress={onBack} />} /><View style={styles.content}><View style={styles.card}>{options.map(([key, label, description]) => <PreferenceSwitch disabled={disabled} key={key} label={label} description={description} value={preferences[key]} onToggle={() => onToggle(key)} />)}</View></View></View>;
 }
 
-const styles = StyleSheet.create({ screen: { backgroundColor: theme.colors.background, flex: 1 }, back: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 }, backText: { color: theme.colors.primary, fontSize: 36 }, content: { padding: theme.spacing.lg }, card: { borderRadius: theme.radius.md, overflow: 'hidden' } });
+const styles = StyleSheet.create({ screen: { flex: 1 }, back: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 }, backText: { color: theme.colors.primary, fontSize: 36 }, content: { padding: theme.spacing.lg }, card: { borderRadius: theme.radius.md, overflow: 'hidden' } });
