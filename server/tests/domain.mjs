@@ -52,3 +52,19 @@ test('envio rejeita conteúdo vazio, excessivo, ID inválido e contato ausente',
   for (const change of [{ text: '   ' }, { text: 12 }, { text: 'a'.repeat(4001) }, { id: '' }, { id: '__proto__' }, { id: 'a'.repeat(129) }, { id: 1 }, { extra: true }]) rejects(state, { ...action, ...change });
   rejects(state, { ...action, contactId: 'ausente' }, 404);
 });
+
+test('sinalizadores absolutos suportam repetição e preservam não lidas', () => {
+  const state = createState();
+  const action = { type: 'flags', contactId: 'luna', muted: true, archived: true };
+  applyAction(state, action);
+  const expected = structuredClone(state);
+  applyAction(state, action);
+  assert.deepEqual(state, expected);
+  assert.equal(state.conversations[0].unread, 2);
+  applyAction(state, { ...action, muted: false, archived: false });
+  assert.equal(state.conversations[0].muted, false);
+  assert.equal(state.conversations[0].archived, false);
+  rejects(state, { type: 'flags', contactId: 'nina', muted: true }, 404);
+  rejects(state, { type: 'flags', contactId: 'ausente', archived: true }, 404);
+  for (const change of [{}, { muted: 1 }, { archived: 'true' }, { muted: true, archived: null }, { muted: true, unread: 0 }]) rejects(state, { type: 'flags', contactId: 'luna', ...change });
+});

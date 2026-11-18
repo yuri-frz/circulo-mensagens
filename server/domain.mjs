@@ -53,6 +53,16 @@ export function applyAction(state, action) {
       Object.assign(state.conversations.find((item) => item.contactId === action.contactId), { preview: text, time, unread: 0 });
       break;
     }
+    case 'flags': {
+      fields(action, ['type', 'contactId', 'muted', 'archived']);
+      contact(state, action.contactId);
+      const keys = ['muted', 'archived'].filter((key) => Object.hasOwn(action, key));
+      if (!keys.length || keys.some((key) => typeof action[key] !== 'boolean')) fail('Informe os sinalizadores como booleanos.');
+      const conversation = state.conversations.find((item) => item.contactId === action.contactId);
+      if (!conversation) fail('Conversa não encontrada.', 404);
+      for (const key of keys) conversation[key] = action[key];
+      break;
+    }
     default: fail('Ação desconhecida.');
   }
   return state;
