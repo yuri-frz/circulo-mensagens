@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
   cancel: { justifyContent: 'center', minHeight: 44, paddingHorizontal: 8, paddingVertical: 10 }, cancelText: { color: theme.colors.primary, fontWeight: '800' },
   field: { marginBottom: 16 }, label: { color: theme.colors.ink, fontSize: 13, fontWeight: '800', marginBottom: 7 },
   input: { backgroundColor: theme.colors.surface, borderColor: theme.colors.line, borderRadius: theme.radius.sm, borderWidth: 1, color: theme.colors.ink, fontSize: 15, minHeight: 48, padding: 13 },
-  multiline: { minHeight: 90, textAlignVertical: 'top' }, invalid: { borderColor: '#C43B52' }, error: { color: '#A72C42', fontSize: 12, marginTop: 5 },
-  save: { alignItems: 'center', backgroundColor: theme.colors.primary, borderRadius: theme.radius.pill, marginTop: 6, padding: 14 }, saveText: { color: '#FFFFFF', fontWeight: '900' }
+  multiline: { minHeight: 90, textAlignVertical: 'top' }, invalid: { borderColor: theme.colors.danger }, error: { color: theme.colors.danger, fontSize: 12, marginTop: 5 },
+  save: { alignItems: 'center', backgroundColor: theme.colors.primary, borderRadius: theme.radius.pill, marginTop: 6, padding: 14 }, saveText: { color: theme.colors.onPrimary, fontWeight: '900' }
 });

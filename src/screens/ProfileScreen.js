@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   username: { color: theme.colors.primary, fontSize: 14, fontWeight: '700', marginTop: 3 },
   bio: { color: theme.colors.muted, fontSize: 15, lineHeight: 21, marginTop: 12, textAlign: 'center' },
   primaryButton: { backgroundColor: theme.colors.primary, borderRadius: theme.radius.pill, marginTop: 20, paddingHorizontal: 24, paddingVertical: 12 },
-  primaryText: { color: '#FFFFFF', fontWeight: '800' },
+  primaryText: { color: theme.colors.onPrimary, fontWeight: '800' },
   card: { paddingVertical: theme.spacing.md },
   label: { color: theme.colors.muted, fontSize: 12, fontWeight: '700', textTransform: 'uppercase' }, value: { color: theme.colors.ink, fontSize: 15, marginTop: 5 },
   divider: { backgroundColor: theme.colors.line, height: 1, marginVertical: 14 },

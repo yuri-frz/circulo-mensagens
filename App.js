@@ -1,3 +1,4 @@
+import { theme } from './src/styles/theme';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
 import { SafeAreaView, StyleSheet, View, Text, Pressable } from 'react-native';
@@ -112,8 +113,8 @@ export default function App() {
   </SafeAreaView>;
 }
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7F7FB' },
-  connection: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 7, backgroundColor: '#EDE9F5' },
-  connectionText: { flex: 1, fontSize: 12, color: '#44385C' }, retry: { minHeight: 44, justifyContent: 'center', paddingLeft: 10 }, retryText: { color: '#6040A0', fontWeight: '700' },
-  error: { padding: 12, color: '#A72C42' }, loading: { padding: 24 },
+  container: { flex: 1, backgroundColor: theme.colors.background },
+  connection: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 7, backgroundColor: theme.colors.primary },
+  connectionText: { flex: 1, fontSize: 12, color: theme.colors.onPrimary }, retry: { minHeight: 44, justifyContent: 'center', paddingLeft: 10 }, retryText: { color: theme.colors.onPrimary, fontWeight: '700' },
+  error: { padding: 12, color: theme.colors.danger }, loading: { padding: 24 },
 });

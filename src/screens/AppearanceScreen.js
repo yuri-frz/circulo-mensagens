@@ -3,12 +3,12 @@ import { IconButton } from '../components/IconButton';
 import { PreferenceChoice } from '../components/PreferenceChoice';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { PreferenceSwitch } from '../components/PreferenceSwitch';
-import { theme } from '../styles/theme';
+import { palette, theme } from '../styles/theme';
 
 const modes = [
-  { id: 'claro', title: 'Claro', description: 'Fundo claro e contraste suave.', swatches: ['#F7F7FB', '#6246A8', '#F29D49'] },
-  { id: 'crepusculo', title: 'Crepúsculo', description: 'Uma paleta mais calma para a noite.', swatches: ['#28233A', '#A999E9', '#F29D49'] },
-  { id: 'contraste', title: 'Alto contraste', description: 'Textos e ações com maior destaque.', swatches: ['#FFFFFF', '#28233A', '#6246A8'] }
+  { id: 'claro', title: 'Claro', description: 'Fundo claro e contraste suave.', swatches: [palette.lavender, palette.grape, palette.lilac] },
+  { id: 'crepusculo', title: 'Crepúsculo', description: 'Uma paleta mais calma para a noite.', swatches: [palette.plum, palette.violet, palette.mauve] },
+  { id: 'contraste', title: 'Alto contraste', description: 'Textos e ações com maior destaque.', swatches: [palette.pearl, palette.plum, palette.grape] }
 ];
 
 export function AppearanceScreen({ appearance, onBack, onSelectMode, onToggleCompactList, disabled = false }) {
