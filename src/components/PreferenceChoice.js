@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../styles/theme';
 
-export function PreferenceChoice({ title, description, selected, swatches, onPress }) {
-  return <Pressable accessibilityRole="radio" accessibilityState={{ selected }} onPress={onPress} style={({ pressed }) => [styles.card, selected && styles.selected, pressed && styles.pressed]}><View style={styles.copy}><Text style={styles.title}>{title}</Text><Text style={styles.description}>{description}</Text></View><View style={styles.right}><View style={styles.swatches}>{swatches.map((color) => <View key={color} style={[styles.swatch, { backgroundColor: color }]} />)}</View><View style={[styles.radio, selected && styles.radioSelected]}>{selected && <View style={styles.dot} />}</View></View></Pressable>;
+export function PreferenceChoice({ title, description, selected, swatches, onPress, disabled = false }) {
+  return <Pressable accessibilityRole="radio" {...(disabled ? { disabled: true } : {})} accessibilityState={{ selected, ...(disabled ? { disabled: true } : {}) }} onPress={onPress} style={({ pressed }) => [styles.card, selected && styles.selected, pressed && styles.pressed]}><View style={styles.copy}><Text style={styles.title}>{title}</Text><Text style={styles.description}>{description}</Text></View><View style={styles.right}><View style={styles.swatches}>{swatches.map((color) => <View key={color} style={[styles.swatch, { backgroundColor: color }]} />)}</View><View style={[styles.radio, selected && styles.radioSelected]}>{selected && <View style={styles.dot} />}</View></View></Pressable>;
 }
 
 const styles = StyleSheet.create({

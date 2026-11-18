@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '../components/Avatar';
 import { ConversationToolbar } from '../components/ConversationToolbar';
-import { contacts } from '../data/conversations';
+import { contacts as demoContacts } from '../data/conversations';
 import { theme } from '../styles/theme';
 import { filterConversations } from '../state/conversationState';
 import { EmptyState } from '../components/EmptyState';
 
-function ConversationRow({ item, onOpen }) {
+function ConversationRow({ item, contacts, onOpen }) {
   const contact = contacts.find((entry) => entry.id === item.contactId);
+  if (!contact) return null;
   return (
     <Pressable accessibilityLabel={`Abrir conversa com ${contact.name}`} accessibilityRole="button" onPress={() => onOpen(contact.id)} style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       <Avatar contact={contact} />
@@ -20,7 +21,7 @@ function ConversationRow({ item, onOpen }) {
   );
 }
 
-export function ConversationsScreen({ conversations, onOpenChat, onOpenContacts, onOpenProfile }) {
+export function ConversationsScreen({ conversations, contacts = demoContacts, onOpenChat, onOpenContacts, onOpenProfile }) {
   const [mode, setMode] = useState('active');
   const visibleConversations = filterConversations(conversations, mode);
   return (
@@ -30,7 +31,7 @@ export function ConversationsScreen({ conversations, onOpenChat, onOpenContacts,
         contentContainerStyle={styles.list}
         data={visibleConversations}
         keyExtractor={(item) => item.contactId}
-        renderItem={({ item }) => <ConversationRow item={item} onOpen={onOpenChat} />}
+        renderItem={({ item }) => <ConversationRow item={item} contacts={contacts} onOpen={onOpenChat} />}
         ListEmptyComponent={<EmptyState title={mode === 'archived' ? 'Nenhuma conversa arquivada' : 'Ainda não há conversas'} description={mode === 'archived' ? 'Quando você arquivar uma conversa, ela aparecerá aqui.' : 'Comece uma conversa com alguém do seu círculo.'} />}
       />
     </View>

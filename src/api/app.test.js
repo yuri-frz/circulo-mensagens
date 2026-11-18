@@ -27,7 +27,7 @@ it('carrega dados, preserva rascunho offline e repete envio com o mesmo id', asy
   fireEvent.changeText(screen.getByLabelText('Mensagem'), 'Olá API');
   await waitFor(() => expect(screen.getByRole('button', { name: 'Enviar mensagem' }).props.accessibilityState.disabled).toBe(false));
   fireEvent.press(screen.getByRole('button', { name: 'Enviar mensagem' }));
-  await waitFor(() => expect(screen.getByText('Conexão perdida')).toBeTruthy());
+  await waitFor(() => expect(screen.getByText('Não foi possível conectar ao servidor. Confira a conexão e toque em Reconectar.')).toBeTruthy());
   expect(screen.getByLabelText('Mensagem').props.value).toBe('Olá API');
   expect(screen.getByRole('button', { name: 'Enviar mensagem' }).props.accessibilityState.disabled).toBe(true);
   fireEvent.press(screen.getByRole('button', { name: 'Voltar para conversas' }));
@@ -42,4 +42,24 @@ it('carrega dados, preserva rascunho offline e repete envio com o mesmo id', asy
   expect(calls[0].id).toBe(calls[1].id);
 });
 
-
+it('registra o contato atual após trocar de conversa com requisição pendente', async () => {
+  let finishFirstOpen;
+  const opened = [];
+  global.fetch = jest.fn(async (url, options) => {
+    const action = options.body && JSON.parse(options.body);
+    if (action?.type === 'open') {
+      opened.push(action.contactId);
+      if (opened.length === 1) await new Promise((resolve) => { finishFirstOpen = resolve; });
+    }
+    return { ok: true, json: async () => state };
+  });
+  const screen = render(<App />);
+  await waitFor(() => expect(screen.getByText(/Conectado/)).toBeTruthy());
+  fireEvent.press(screen.getByRole('button', { name: 'Abrir conversa com Luna Martins' }));
+  await waitFor(() => expect(opened).toEqual(['luna']));
+  fireEvent.press(screen.getByRole('button', { name: 'Voltar para conversas' }));
+  fireEvent.press(screen.getByRole('button', { name: 'Abrir conversa com Caio Nunes' }));
+  expect(opened).toEqual(['luna']);
+  finishFirstOpen();
+  await waitFor(() => expect(opened).toEqual(['luna', 'caio']));
+});

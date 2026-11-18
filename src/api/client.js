@@ -9,13 +9,13 @@ export function createApiClient(origin, fetcher = fetch, timeout = 10000) {
     const controller = new AbortController();
     let timer;
     try {
-      const response = await Promise.race([
+      const { response, data } = await Promise.race([
         fetcher(`${origin}/api/${path}`, {
           method: action ? 'POST' : 'GET',
           headers: { 'Content-Type': 'application/json' },
           ...(action ? { body: JSON.stringify(action) } : {}),
           signal: controller.signal,
-        }),
+        }).then(async (response) => ({ response, data: await response.json() })).catch(() => { throw new Error('Não foi possível conectar ao servidor. Confira a conexão e toque em Reconectar.'); }),
         new Promise((_, reject) => {
           timer = setTimeout(() => {
             controller.abort();
@@ -23,7 +23,6 @@ export function createApiClient(origin, fetcher = fetch, timeout = 10000) {
           }, timeout);
         }),
       ]);
-      const data = await response.json();
       if (!response.ok) {
         const error = new Error(data.error || 'Não foi possível concluir a operação.');
         error.status = response.status;

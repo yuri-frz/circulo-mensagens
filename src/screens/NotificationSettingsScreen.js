@@ -11,8 +11,8 @@ const options = [
   ['vibration', 'Vibração', 'Vibrar junto com os avisos.']
 ];
 
-export function NotificationSettingsScreen({ preferences, onBack, onToggle }) {
-  return <View style={styles.screen}><ScreenHeader eyebrow="preferências" title="Notificações" right={<IconButton icon="‹" label="Voltar às configurações" onPress={onBack} />} /><View style={styles.content}><View style={styles.card}>{options.map(([key, label, description]) => <PreferenceSwitch key={key} label={label} description={description} value={preferences[key]} onToggle={() => onToggle(key)} />)}</View></View></View>;
+export function NotificationSettingsScreen({ preferences, onBack, onToggle, disabled = false }) {
+  return <View style={styles.screen}><ScreenHeader eyebrow="preferências" title="Notificações" right={<IconButton icon="‹" label="Voltar às configurações" onPress={onBack} />} /><View style={styles.content}><View style={styles.card}>{options.map(([key, label, description]) => <PreferenceSwitch disabled={disabled} key={key} label={label} description={description} value={preferences[key]} onToggle={() => onToggle(key)} />)}</View></View></View>;
 }
 
 const styles = StyleSheet.create({ screen: { backgroundColor: theme.colors.background, flex: 1 }, back: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 }, backText: { color: theme.colors.primary, fontSize: 36 }, content: { padding: theme.spacing.lg }, card: { borderRadius: theme.radius.md, overflow: 'hidden' } });

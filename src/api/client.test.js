@@ -19,3 +19,12 @@ it('exibe erro retornado pelo servidor', async () => {
   const client = createApiClient('http://localhost:3001', async () => ({ ok: false, json: async () => ({ error: 'Contato inválido.' }) }));
   await expect(client.state()).rejects.toThrow('Contato inválido.');
 });
+
+it('encerra espera mesmo quando o transporte ignora cancelamento', async () => {
+  jest.useFakeTimers();
+  const client = createApiClient('http://localhost:3001', () => new Promise(() => {}), 100);
+  const result = expect(client.state()).rejects.toThrow('A conexão demorou demais');
+  jest.advanceTimersByTime(100);
+  await result;
+  jest.useRealTimers();
+});

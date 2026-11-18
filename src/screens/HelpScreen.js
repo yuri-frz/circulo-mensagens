@@ -6,7 +6,7 @@ import { theme } from '../styles/theme';
 const questions = [
   ['Como inicio uma conversa?', 'Abra Pessoas, escolha um contato e escreva sua primeira mensagem.'],
   ['Onde encontro arquivos enviados?', 'Abra os detalhes de uma conversa para consultar as mídias e documentos compartilhados.'],
-  ['As minhas escolhas ficam salvas?', 'Nesta versão acadêmica, as preferências funcionam durante a sessão atual.'],
+  ['As minhas escolhas ficam salvas?', 'Sim. As preferências demonstrativas e mensagens ficam salvas no servidor. Sem conexão, você pode consultar a última cópia salva neste aparelho.'],
   ['O que é o Círculo?', 'Um protótipo de mensagens criado para aproximar pessoas em conversas simples e acolhedoras.']
 ];
 

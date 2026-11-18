@@ -24,6 +24,7 @@ export default function App() {
   const [drafts, setDrafts] = useState({});
   const [profileDraft, setProfileDraft] = useState(null);
   const pendingSends = useRef({});
+  const openedContact = useRef(null);
   const sessionRef = useRef(null);
   if (!sessionRef.current) {
     const origin = resolveApiOrigin({ configured: process.env.EXPO_PUBLIC_API_URL, hostname: globalThis.location?.hostname, hostUri: Constants.expoConfig?.hostUri });
@@ -48,9 +49,14 @@ export default function App() {
   const state = connection.state;
   const contact = state?.contacts.find((item) => item.id === contactId);
   const conversation = state?.conversations.find((item) => item.contactId === contactId);
+  useEffect(() => {
+    if (!connection.online) { openedContact.current = null; return; }
+    if (!contactId || connection.busy || openedContact.current === contactId) return;
+    openedContact.current = contactId;
+    session.act({ type: 'open', contactId });
+  }, [contactId, connection.online, connection.busy, session]);
   function openChat(id, fromPeople = false) {
     setNavigation((current) => fromPeople ? openChatFromContacts(current, id) : navigateTo(current, 'chat', { contactId: id }));
-    if (connection.online) session.act({ type: 'open', contactId: id });
   }
   async function sendMessage(text) {
     const id = contactId;
@@ -96,11 +102,11 @@ export default function App() {
       {screen === 'profile' && <ProfileScreen profile={state.profile} onBack={back} onEdit={() => { if (!profileDraft) setProfileDraft(state.profile); open('editProfile'); }} onOpenSettings={() => open('settings')} />}
       {screen === 'editProfile' && <EditProfileScreen profile={state.profile} draft={profileDraft} onDraftChange={setProfileDraft} disabled={disabled} onCancel={() => { setProfileDraft(null); back(); }} onSave={saveProfile} />}
       {screen === 'settings' && <SettingsScreen notificationPreferences={state.notificationPreferences} appearance={state.appearance} onBack={back} onOpenNotifications={() => open('notifications')} onOpenAppearance={() => open('appearance')} onOpenPrivacy={() => open('privacy')} onOpenHelp={() => open('help')} />}
-      {screen === 'notifications' && <NotificationSettingsScreen preferences={state.notificationPreferences} onBack={back} onToggle={(key) => preference('notificationPreferences', key, !state.notificationPreferences[key])} />}
-      {screen === 'appearance' && <AppearanceScreen appearance={state.appearance} onBack={back} onSelectMode={(mode) => preference('appearance', 'mode', mode)} onToggleCompactList={() => preference('appearance', 'compactList', !state.appearance.compactList)} />}
-      {screen === 'privacy' && <PrivacyScreen preferences={state.privacyPreferences} onBack={back} onToggle={(key) => preference('privacyPreferences', key, !state.privacyPreferences[key])} />}
+      {screen === 'notifications' && <NotificationSettingsScreen disabled={disabled} preferences={state.notificationPreferences} onBack={back} onToggle={(key) => preference('notificationPreferences', key, !state.notificationPreferences[key])} />}
+      {screen === 'appearance' && <AppearanceScreen disabled={disabled} appearance={state.appearance} onBack={back} onSelectMode={(mode) => preference('appearance', 'mode', mode)} onToggleCompactList={() => preference('appearance', 'compactList', !state.appearance.compactList)} />}
+      {screen === 'privacy' && <PrivacyScreen disabled={disabled} preferences={state.privacyPreferences} onBack={back} onToggle={(key) => preference('privacyPreferences', key, !state.privacyPreferences[key])} />}
       {screen === 'help' && <HelpScreen onBack={back} />}
-      {screen === 'conversationDetails' && contact && <ConversationDetailsScreen contact={contact} conversation={conversation} onBack={back} onOpenMedia={() => open('conversationMedia', { contactId })} onToggleMuted={() => session.act({ type: 'flags', contactId, muted: !conversation?.muted })} onToggleArchived={archive} />}
+      {screen === 'conversationDetails' && contact && <ConversationDetailsScreen disabled={disabled} contact={contact} conversation={conversation} onBack={back} onOpenMedia={() => open('conversationMedia', { contactId })} onToggleMuted={() => session.act({ type: 'flags', contactId, muted: !conversation?.muted })} onToggleArchived={archive} />}
       {screen === 'conversationMedia' && contact && <ConversationMediaScreen contact={contact} onBack={back} />}
     </>}
   </SafeAreaView>;
