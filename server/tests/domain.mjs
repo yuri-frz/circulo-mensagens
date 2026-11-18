@@ -53,6 +53,21 @@ test('envio rejeita conteúdo vazio, excessivo, ID inválido e contato ausente',
   rejects(state, { ...action, contactId: 'ausente' }, 404);
 });
 
+test('novo envio move a conversa ao topo sem reordenar as demais ou repetir efeitos no retry', () => {
+  const state = createState();
+  applyAction(state, { type: 'flags', contactId: 'davi', muted: true, archived: true });
+  const action = { type: 'send', contactId: 'davi', id: 'recent-davi', text: 'Nova mensagem' };
+  applyAction(state, action);
+  assert.deepEqual(state.conversations.map((item) => item.contactId), ['davi', 'luna', 'caio', 'bia']);
+  assert.equal(state.conversations[0].muted, true);
+  assert.equal(state.conversations[0].archived, true);
+  applyAction(state, { type: 'send', contactId: 'nina', id: 'recent-nina', text: 'Olá' });
+  assert.deepEqual(state.conversations.map((item) => item.contactId), ['nina', 'davi', 'luna', 'caio', 'bia']);
+  const beforeRetry = structuredClone(state);
+  applyAction(state, action);
+  assert.deepEqual(state, beforeRetry);
+});
+
 test('sinalizadores absolutos suportam repetição e preservam não lidas', () => {
   const state = createState();
   const action = { type: 'flags', contactId: 'luna', muted: true, archived: true };

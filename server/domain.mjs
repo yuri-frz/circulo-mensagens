@@ -50,7 +50,9 @@ export function applyAction(state, action) {
       state.conversations = ensureConversation(state.conversations, action.contactId);
       state.messages[action.contactId] ??= [];
       state.messages[action.contactId].push({ id: action.id, text, time, mine: true });
-      Object.assign(state.conversations.find((item) => item.contactId === action.contactId), { preview: text, time, unread: 0 });
+      const conversation = state.conversations.find((item) => item.contactId === action.contactId);
+      Object.assign(conversation, { preview: text, time, unread: 0 });
+      state.conversations = [conversation, ...state.conversations.filter((item) => item.contactId !== action.contactId)];
       break;
     }
     case 'flags': {
