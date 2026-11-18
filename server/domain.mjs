@@ -1,5 +1,5 @@
 import { contacts, initialConversations, initialMessages } from '../src/data/conversations.js';
-import { initialProfile } from '../src/state/profileState.js';
+import { initialProfile, normalizeProfile, validateProfile } from '../src/state/profileState.js';
 import { initialAppearance, initialPrivacyPreferences } from '../src/state/appPreferences.js';
 import { ensureConversation, initialNotificationPreferences } from '../src/state/conversationState.js';
 
@@ -61,6 +61,32 @@ export function applyAction(state, action) {
       const conversation = state.conversations.find((item) => item.contactId === action.contactId);
       if (!conversation) fail('Conversa não encontrada.', 404);
       for (const key of keys) conversation[key] = action[key];
+      break;
+    }
+    case 'profile': {
+      fields(action, ['type', 'profile']);
+      const limits = { name: 100, username: 64, bio: 500, email: 254, phone: 40 };
+      fields(action.profile, [...Object.keys(limits), 'initials', 'color']);
+      const updates = {};
+      for (const [key, limit] of Object.entries(limits)) {
+        if (!Object.hasOwn(action.profile, key)) continue;
+        if (typeof action.profile[key] !== 'string' || action.profile[key].length > limit) fail(`Campo ${key} inválido: limite de ${limit} caracteres.`);
+        updates[key] = action.profile[key];
+      }
+      if (!Object.keys(updates).length) fail('Informe ao menos um campo editável.');
+      const profile = normalizeProfile({ ...state.profile, ...updates });
+      if (!validateProfile(profile).valid) fail('Informe seu nome.');
+      state.profile = profile;
+      break;
+    }
+    case 'preference': {
+      fields(action, ['type', 'group', 'key', 'value']);
+      const defaults = { appearance: initialAppearance, privacyPreferences: initialPrivacyPreferences, notificationPreferences: initialNotificationPreferences };
+      if (typeof action.group !== 'string' || !Object.hasOwn(defaults, action.group) || typeof action.key !== 'string' || !Object.hasOwn(defaults[action.group], action.key)) fail('Preferência desconhecida.');
+      if (action.group === 'appearance' && action.key === 'mode') {
+        if (!['claro', 'crepusculo', 'contraste'].includes(action.value)) fail('Modo de aparência inválido.');
+      } else if (typeof action.value !== 'boolean') fail('O valor da preferência deve ser booleano.');
+      state[action.group][action.key] = action.value;
       break;
     }
     default: fail('Ação desconhecida.');

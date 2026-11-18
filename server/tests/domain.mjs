@@ -68,3 +68,38 @@ test('sinalizadores absolutos suportam repetição e preservam não lidas', () =
   rejects(state, { type: 'flags', contactId: 'ausente', archived: true }, 404);
   for (const change of [{}, { muted: 1 }, { archived: 'true' }, { muted: true, archived: null }, { muted: true, unread: 0 }]) rejects(state, { type: 'flags', contactId: 'luna', ...change });
 });
+
+test('perfil atualiza apenas campos editáveis normalizados e preserva identidade visual', () => {
+  const state = createState();
+  applyAction(state, { type: 'profile', profile: { ...state.profile, name: '  Ana Silva  ', bio: ' Café ', initials: 'XX', color: '#000000' } });
+  assert.equal(state.profile.name, 'Ana Silva');
+  assert.equal(state.profile.bio, 'Café');
+  assert.equal(state.profile.initials, 'PO');
+  assert.equal(state.profile.color, '#D9D2FA');
+  applyAction(state, { type: 'profile', profile: { email: '' } });
+  assert.equal(state.profile.email, '');
+  for (const profile of [null, [], {}, { name: '' }, { name: '  ' }, { bio: 1 }, { name: 'a'.repeat(101) }, { username: 'a'.repeat(65) }, { bio: 'a'.repeat(501) }, { email: 'a'.repeat(255) }, { phone: 'a'.repeat(41) }, { name: 'Ana', admin: true }]) rejects(state, { type: 'profile', profile });
+});
+
+test('preferências aplicam valores absolutos somente a grupos, chaves e modos conhecidos', () => {
+  const state = createState();
+  for (const mode of ['crepusculo', 'contraste', 'claro']) {
+    applyAction(state, { type: 'preference', group: 'appearance', key: 'mode', value: mode });
+    assert.equal(state.appearance.mode, mode);
+  }
+  for (const [group, key] of [['appearance', 'compactList'], ['privacyPreferences', 'readReceipts'], ['privacyPreferences', 'onlineStatus'], ['privacyPreferences', 'profilePhoto'], ['notificationPreferences', 'messages'], ['notificationPreferences', 'mentions'], ['notificationPreferences', 'sounds'], ['notificationPreferences', 'vibration']]) {
+    for (const value of [true, true, false]) {
+      applyAction(state, { type: 'preference', group, key, value });
+      assert.equal(state[group][key], value);
+    }
+  }
+  for (const action of [
+    { group: 'profile', key: 'name', value: 'Ana' },
+    { group: '__proto__', key: 'polluted', value: true },
+    { group: 'appearance', key: '__proto__', value: true },
+    { group: 'appearance', key: 'mode', value: 'escuro' },
+    { group: 'appearance', key: 'mode', value: {} },
+    { group: 'privacyPreferences', key: 'readReceipts', value: 'false' },
+    { group: 'notificationPreferences', key: 'sounds' }
+  ]) rejects(state, { type: 'preference', ...action });
+});
