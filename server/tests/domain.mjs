@@ -28,3 +28,27 @@ test('abertura rejeita contato inexistente e ações malformadas sem mutação',
   rejects(state, { type: 'open', contactId: 'desconhecido' }, 404);
   for (const action of [null, [], {}, { type: 'inexistente' }, { type: 'open' }, { type: 'open', contactId: '__proto__' }, { type: 'open', contactId: 'luna', extra: true }]) rejects(state, action);
 });
+
+test('envio cria conversa, normaliza texto e mantém reenvio idempotente', () => {
+  const state = createState();
+  const action = { type: 'send', contactId: 'nina', id: 'client-1', text: '  Olá, Nina!  ' };
+  applyAction(state, action);
+  const beforeRetry = structuredClone(state);
+  applyAction(state, action);
+  assert.deepEqual(state, beforeRetry);
+  assert.equal(state.messages.nina.length, 1);
+  assert.equal(state.messages.nina[0].text, 'Olá, Nina!');
+  assert.equal(state.messages.nina[0].mine, true);
+  assert.match(state.messages.nina[0].time, /^\d{2}:\d{2}$/);
+  assert.equal(state.conversations.find((item) => item.contactId === 'nina').preview, 'Olá, Nina!');
+  rejects(state, { ...action, text: 'Outra mensagem' }, 409);
+  rejects(state, { ...action, contactId: 'luna' }, 409);
+  rejects(state, { ...action, id: 'l1', contactId: 'luna' }, 409);
+});
+
+test('envio rejeita conteúdo vazio, excessivo, ID inválido e contato ausente', () => {
+  const state = createState();
+  const action = { type: 'send', contactId: 'nina', id: 'client-1', text: 'Oi' };
+  for (const change of [{ text: '   ' }, { text: 12 }, { text: 'a'.repeat(4001) }, { id: '' }, { id: '__proto__' }, { id: 'a'.repeat(129) }, { id: 1 }, { extra: true }]) rejects(state, { ...action, ...change });
+  rejects(state, { ...action, contactId: 'ausente' }, 404);
+});

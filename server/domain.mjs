@@ -34,6 +34,25 @@ export function applyAction(state, action) {
       state.conversations.find((item) => item.contactId === action.contactId).unread = 0;
       break;
     }
+    case 'send': {
+      fields(action, ['type', 'contactId', 'id', 'text']);
+      contact(state, action.contactId);
+      if (typeof action.id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,127}$/.test(action.id)) fail('Identificador da mensagem inválido.');
+      if (typeof action.text !== 'string' || action.text.length > 4000 || !action.text.trim()) fail('Informe uma mensagem com até 4.000 caracteres.');
+      const text = action.text.trim();
+      for (const [contactId, messages] of Object.entries(state.messages)) {
+        const existing = messages.find((message) => message.id === action.id);
+        if (!existing) continue;
+        if (contactId === action.contactId && existing.mine && existing.text === text) return state;
+        fail('O identificador já pertence a outra mensagem.', 409);
+      }
+      const time = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' }).format(new Date());
+      state.conversations = ensureConversation(state.conversations, action.contactId);
+      state.messages[action.contactId] ??= [];
+      state.messages[action.contactId].push({ id: action.id, text, time, mine: true });
+      Object.assign(state.conversations.find((item) => item.contactId === action.contactId), { preview: text, time, unread: 0 });
+      break;
+    }
     default: fail('Ação desconhecida.');
   }
   return state;
