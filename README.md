@@ -4,6 +4,10 @@ O app Expo usa um perfil de demonstração compartilhado. As conversas, as mensa
 
 ## Rodar no computador
 
+Com o Docker Desktop aberto, execute `docker compose up --build -d` na pasta do projeto e abra [o Círculo no navegador](http://localhost:8081). A API atende na porta 3001 e o SQLite fica no volume `dados`. Para parar o projeto e manter as conversas, execute `docker compose down`.
+
+### Rodar sem Docker
+
 Use Node.js 22.22 ou superior. Na pasta do projeto, instale as dependências com `npm ci --legacy-peer-deps`. Abra dois terminais nessa mesma pasta.
 
 1. No primeiro, execute `npm run api`. O endereço padrão é `http://127.0.0.1:3001`.
