@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { PrintTexture } from './PrintTexture';
+import { AnimatedCover } from './AnimatedCover';
 import { theme } from '../styles/theme';
 
 export function ScreenHeader({ eyebrow, title, right, featured = false }) {
   return (
     <View style={[styles.header, featured && styles.cover]}>
-      {featured && <PrintTexture dark />}
+      {featured && <AnimatedCover />}
       <View>
         {eyebrow && <Text style={[styles.eyebrow, featured && styles.coverEyebrow]}>{eyebrow}</Text>}
         <Text style={[styles.title, featured && styles.coverTitle]}>{title}</Text>
